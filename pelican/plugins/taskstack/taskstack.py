@@ -140,7 +140,7 @@ class TaskStack:
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
                     start_time = event.created_at.astimezone(timezone.utc)
                     # start_time = datetime.fromisoformat(event.created_at)
-                    elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
+                    elapsed = (datetime.utcnow().astimezone(timezone.utc) - start_time).total_seconds() / 60
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
