@@ -1,4 +1,3 @@
 include LICENSE
 include README.md
-recursive-include pelican_taskstack/static *
-recursive-include pelican_taskstack/templates *
+recursive-include pelican *
