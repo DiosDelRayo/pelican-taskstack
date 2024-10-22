@@ -91,7 +91,7 @@ class TaskStack:
                     'title': issue.title,
                     'number': issue.number,
                     'url': issue.html_url,
-                    'labels': [label for label in issue.labels()],
+                    'labels': [label.name for label in issue.labels()],
                     'pomodoros': self._calculate_pomodoros(issue)
                 }
 
@@ -116,26 +116,32 @@ class TaskStack:
         pomodoros = []
         start_time = None
 
-        for event in issue.events():
-            if event.event == 'labeled' and event.label.name == 'WIP':
-                start_time = event.created_at
-            elif event.event == 'unlabeled' and event.label.name == 'WIP' and start_time:
-                pomodoros.append({
-                    'start': start_time,
-                    'end': event.created_at,
-                    'duration': (event.created_at - start_time).total_seconds() / 60
-                })
-                start_time = None
+        try:
+            for event in issue.events():
+                if event.event == 'labeled' and event.label.name == 'WIP':
+                    start_time = event.created_at
+                elif event.event == 'unlabeled' and event.label.name == 'WIP' and start_time:
+                    pomodoros.append({
+                        'start': start_time,
+                        'end': event.created_at,
+                        'duration': (event.created_at - start_time).total_seconds() / 60
+                    })
+                    start_time = None
+        except Exception as e:
+            logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
 
         return pomodoros
 
     def _get_current_pomodoro_progress(self, issue):
         """Calculate progress of current pomodoro."""
-        for event in issue.events():
-            if event.event == 'labeled' and event.label.name == 'WIP':
-                start_time = event.created_at
-                elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
-                return min(100, (elapsed / self.pomodoro_duration) * 100)
+        try:
+            for event in issue.events():
+                if event.event == 'labeled' and event.label.name == 'WIP':
+                    start_time = event.created_at
+                    elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
+                    return min(100, (elapsed / self.pomodoro_duration) * 100)
+        except Exception as e:
+            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
         return 0
 
     @classmethod
