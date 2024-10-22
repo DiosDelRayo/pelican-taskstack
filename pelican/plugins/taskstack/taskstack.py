@@ -143,6 +143,7 @@ class TaskStack:
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
+            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}')
         return 0
 
     @classmethod
