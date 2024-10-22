@@ -73,8 +73,8 @@ class TaskStack:
             raise ValueError("Could not determine GitHub repository")
 
         self.gh = login(token=self.github_token)
-        owner, repo = repo_full_name.split('/')
-        self.repo = self.gh.repository(owner, repo)
+        self.owner, repo = repo_full_name.split('/')
+        self.repo = self.gh.repository(self.owner, repo)
 
     def get_tasks(self):
         """Fetch and process GitHub issues."""
@@ -85,7 +85,7 @@ class TaskStack:
             'today': []
         }
 
-        for issue in self.repo.issues(assignee=self.gh.me().login):
+        for issue in self.repo.issues(assignee=self.owner):
             task = {
                 'title': issue.title,
                 'number': issue.number,
