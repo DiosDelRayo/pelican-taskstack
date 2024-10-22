@@ -138,7 +138,7 @@ class TaskStack:
         try:
             for event in issue.events():
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
-                    start_time = date_time.fromisoformat(event.created_at)
+                    start_time = datetime.fromisoformat(event.created_at)
                     elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
         except Exception as e:
