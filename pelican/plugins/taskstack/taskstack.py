@@ -91,6 +91,7 @@ class TaskStack:
                 task = {
                     'title': issue.title,
                     'number': issue.number,
+                    'body': issue.body,
                     'url': issue.html_url,
                     'labels': [label.name for label in issue.labels()],
                     'pomodoros': self._calculate_pomodoros(issue)
@@ -185,7 +186,24 @@ class TaskStack:
         with open(static_path, 'r') as f:
             return f.read()
 
-    def _generate_tasks_html(self, tasks):
+    def _render_task(self, task) -> str:
+        classes = ['task']
+        total_time = 0
+        for pomodoro in task['pomodoros']:
+            total_time += pomodoro['duration']
+        out = f'''
+<div class="{' '.join(classes)}">
+    <a href="{task['url']}">{task['number']} {task['title']}</a>
+    <div class="pomodoro-count">
+        🍅: {len(task['pomodoros'])}
+    </div>
+    <div class="time-count">
+        ⌛: {total_time} min (ceil({total_time / self.pomodoro_duration}))
+    </div>
+</div>
+        '''
+
+    def _generate_tasks_html(self, tasks) -> str:
         """Generate HTML for tasks without using a template file."""
         html = ['<div class="taskstack">']
         
@@ -193,18 +211,7 @@ class TaskStack:
         html.append('<div class="stacked-tasks">')
         html.append('<h2>Task Pipeline</h2>')
         for task in tasks['stacked']:
-            total_time = 0
-            for pomodoro in task['pomodoros']:
-                total_time += pomodoro['duration']
-            html.append(f'''
-                <div class="task">
-                    <a href="{task['url']}">{task['number']} {task['title']}</a>
-                    <div class="pomodoro-count">
-                        🍅: {len(task['pomodoros'])}
-                        ⌛: {total_time}
-                    </div>
-                </div>
-            ''')
+            html.append(self._render_task(task))
         html.append('</div>')
         
         # Active task
