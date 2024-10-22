@@ -6,6 +6,7 @@ from github3 import login
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
+from math import ceil
 import logging
 
 logger = logging.getLogger(__name__)
@@ -124,7 +125,7 @@ class TaskStack:
                     pomodoros.append({
                         'start': start_time,
                         'end': event.created_at,
-                        'duration': (event.created_at - start_time).total_seconds() / 60
+                        'duration': ceil(((event.created_at - start_time).total_seconds() / 60)
                     })
                     start_time = None
         except Exception as e:
