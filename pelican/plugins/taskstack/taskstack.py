@@ -137,7 +137,7 @@ class TaskStack:
         """Calculate progress of current pomodoro."""
         try:
             for event in issue.events():
-                if event.event == 'labeled' and event.label.name == 'WIP':
+                if event.event == 'labeled' and event.label['name'] == 'WIP':
                     start_time = event.created_at
                     elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
