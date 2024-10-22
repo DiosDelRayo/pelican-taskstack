@@ -81,11 +81,10 @@ class TaskStack:
         tasks = {
             'stacked': [],
             'active': None,
-            'wip': None,
-            'today': []
+            'wip': None
         }
 
-        for issue in self.repo.issues(assignee=self.owner):
+        for issue in self.repo.issues():
             task = {
                 'title': issue.title,
                 'number': issue.number,
@@ -102,7 +101,10 @@ class TaskStack:
                 tasks['wip'] = task
                 task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
 
-        logger.warn(f'tasks: {tasks.keys()}')
+        try:
+            logger.information(f'tasks: {tasks}')
+        except e:
+            logger.warning(e)
         return tasks
 
     def _calculate_pomodoros(self, issue):
