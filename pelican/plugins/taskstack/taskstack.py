@@ -202,7 +202,7 @@ class TaskStack:
 
 def register():
     """Register the plugin with Pelican."""
-        logger.warning(f'register')
+    logger.warning(f'register')
 
     def add_taskstack_to_context(generator, metadata):
         metadata['taskstack_instance'] = TaskStack.get_instance()
