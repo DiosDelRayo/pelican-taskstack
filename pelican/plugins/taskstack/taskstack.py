@@ -202,6 +202,7 @@ class TaskStack:
     </div>
 </div>
         '''
+        return out
 
     def _generate_tasks_html(self, tasks) -> str:
         """Generate HTML for tasks without using a template file."""
