@@ -118,9 +118,9 @@ class TaskStack:
 
         try:
             for event in issue.events():
-                if event.event == 'labeled' and event.label.name == 'WIP':
+                if event.event == 'labeled' and event.label['name'] == 'WIP':
                     start_time = event.created_at
-                elif event.event == 'unlabeled' and event.label.name == 'WIP' and start_time:
+                elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     pomodoros.append({
                         'start': start_time,
                         'end': event.created_at,
