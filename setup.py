@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pelican-taskstack',
-    version='0.2.2',
+    version='0.2.3',
     description='Pelican plugin for visualizing TaskStacks',
     author='DiosDelRayo',
     packages=find_packages(),
@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'pelican.plugins': [
-            'pelican_taskstack = pelican_taskstack:register'
+            'pelican_taskstack = pelican.plugins.pelican_taskstack:register'
         ]
     },
 )
