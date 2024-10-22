@@ -1,3 +1,4 @@
+from pelican import signals
 from .taskstack import TaskStack
 
 def register():

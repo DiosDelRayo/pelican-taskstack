@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pelican-taskstack',
-    version='0.2.0',
+    version='0.2.1',
     description='Pelican plugin for visualizing TaskStacks',
     author='DiosDelRayo',
     packages=find_packages(),
