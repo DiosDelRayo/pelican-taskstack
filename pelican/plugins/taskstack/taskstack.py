@@ -102,7 +102,7 @@ class TaskStack:
                 tasks['wip'] = task
                 task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
 
-        logger.warn(f'tasks: {len(tasks)}')
+        logger.warn(f'tasks: {tasks.keys()}')
         return tasks
 
     def _calculate_pomodoros(self, issue):
