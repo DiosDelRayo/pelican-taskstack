@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 from datetime import datetime, timedelta
 from github3 import login
 from pelican import signals
@@ -145,8 +146,8 @@ class TaskStack:
                 tasks_html = cls.instance._generate_tasks_html(tasks)
                 
                 # Inject CSS and JS
-                css = cls.instance._get_static_content('../../css/taskstack.css')
-                js = cls.instance._get_static_content('../../js/taskstack.js')
+                css = cls.instance._get_static_content('css/taskstack.css')
+                js = cls.instance._get_static_content('js/taskstack.js')
                 
                 # Replace placeholder with content and add CSS/JS
                 content._content = content._content.replace(
@@ -161,7 +162,7 @@ class TaskStack:
 
     def _get_static_content(self, filename):
         """Read static file content."""
-        static_path = os.path.join(os.path.dirname(__file__), 'static', filename)
+        static_path = Path(os.path.join(os.path.dirname(__file__), '../../', 'static', filename)).absolute()
         with open(static_path, 'r') as f:
             return f.read()
 
