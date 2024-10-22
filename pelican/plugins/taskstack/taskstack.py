@@ -193,7 +193,7 @@ class TaskStack:
         html.append('<h2>Task Pipeline</h2>')
         for task in tasks['stacked']:
             total_time = 0
-            for pomodoro in task['pomodoro']:
+            for pomodoro in task['pomodoros']:
                 total_time += pomodoro['duration']
             html.append(f'''
                 <div class="task">
