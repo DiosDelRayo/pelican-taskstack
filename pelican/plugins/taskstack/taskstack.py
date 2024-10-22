@@ -75,6 +75,61 @@ class TaskStack:
         owner, repo = repo_full_name.split('/')
         self.repo = self.gh.repository(owner, repo)
 
+    def get_tasks(self):
+        """Fetch and process GitHub issues."""
+        tasks = {
+            'stacked': [],
+            'active': None,
+            'wip': None,
+            'today': []
+        }
+
+        for issue in self.repo.issues(labels=['Stacked', 'Active', 'WIP']):
+            task = {
+                'title': issue.title,
+                'number': issue.number,
+                'url': issue.html_url,
+                'labels': [label.name for label in issue.labels],
+                'pomodoros': self._calculate_pomodoros(issue)
+            }
+
+            if 'Stacked' in task['labels']:
+                tasks['stacked'].append(task)
+            if 'Active' in task['labels']:
+                tasks['active'] = task
+            if 'WIP' in task['labels']:
+                tasks['wip'] = task
+                task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
+
+        return tasks
+
+    def _calculate_pomodoros(self, issue):
+        """Calculate completed pomodoros from issue events."""
+        pomodoros = []
+        start_time = None
+
+        for event in issue.events():
+            if event.event == 'labeled' and event.label.name == 'WIP':
+                start_time = event.created_at
+            elif event.event == 'unlabeled' and event.label.name == 'WIP' and start_time:
+                pomodoros.append({
+                    'start': start_time,
+                    'end': event.created_at,
+                    'duration': (event.created_at - start_time).total_seconds() / 60
+                })
+                start_time = None
+
+        return pomodoros
+
+    def _get_current_pomodoro_progress(self, issue):
+        """Calculate progress of current pomodoro."""
+        for event in issue.events():
+            if event.event == 'labeled' and event.label.name == 'WIP':
+                start_time = event.created_at
+                elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
+                return min(100, (elapsed / self.pomodoro_duration) * 100)
+        return 0
+
     @classmethod
     def inject_content(cls, content):
         """Inject taskstack content into an article or page."""
