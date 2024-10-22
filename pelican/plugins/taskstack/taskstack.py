@@ -4,10 +4,18 @@ from datetime import datetime, timedelta
 from github3 import login
 from pelican import signals
 from jinja2 import Template
+from pelican import signals
+import logging
+
+logger = logging.getLogger(__name__)
+logger.warning('Load TaskStack')
 
 class TaskStack:
 
+    instance: 'TaskStack' = None
+
     def __init__(self, pelican):
+        logger.warning(f'Create instance: {pelican}')
         self.pelican = pelican
         self.settings = pelican.settings
         self.github_token = self._get_github_token()
@@ -67,18 +75,23 @@ class TaskStack:
         owner, repo = repo_full_name.split('/')
         self.repo = self.gh.repository(owner, repo)
 
-    def inject_content(self, content):
+    @classmethod
+    def inject_content(cls, content):
         """Inject taskstack content into an article or page."""
+        logger.warning(f'TaskStack.inject_content({content})')
+        if not hasattr(content, '_content'):
+            logger.warning('TaskStack.inject_content(): No content')
+            return
         try:
             if '{taskstack}' in content._content:
-                tasks = self.get_tasks()
+                tasks = cls.instance.get_tasks()
                 
                 # Generate HTML content
-                tasks_html = self._generate_tasks_html(tasks)
+                tasks_html = cls.instance._generate_tasks_html(tasks)
                 
                 # Inject CSS and JS
-                css = self._get_static_content('css/taskstack.css')
-                js = self._get_static_content('js/taskstack.js')
+                css = cls.instance._get_static_content('css/taskstack.css')
+                js = cls.instance._get_static_content('js/taskstack.js')
                 
                 # Replace placeholder with content and add CSS/JS
                 content._content = content._content.replace(
@@ -176,3 +189,25 @@ class TaskStack:
         if self.use_template:
             self._copy_static_files(writer)
 
+    @classmethod
+    def initialize(cls, pelican) -> 'TaskStack':
+        logger.warning(f'TaskStack.initialize({pelican})')
+        cls.instance = cls(pelican)
+        return cls.get_instance()
+
+    @classmethod
+    def get_instance(cls) -> 'TaskStack':
+        return cls.instance
+
+
+def register():
+    """Register the plugin with Pelican."""
+        logger.warning(f'register')
+
+    def add_taskstack_to_context(generator, metadata):
+        metadata['taskstack_instance'] = TaskStack.get_instance()
+
+    signals.initialized.connect(TaskStack.initialize)
+    signals.content_object_init.connect(TaskStack.inject_content)
+    signals.page_generator_context.connect(add_taskstack_to_context)
+    signals.article_generator_context.connect(add_taskstack_to_context)

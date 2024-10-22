@@ -5,7 +5,8 @@ setup(
     version='0.2.3',
     description='Pelican plugin for visualizing TaskStacks',
     author='DiosDelRayo',
-    packages=find_packages(),
+    # packages=find_packages(),
+    packages=['pelican'],
     include_package_data=True,  # This is important to include static files
     install_requires=[
         'github3.py>=3.0.0',
@@ -14,7 +15,7 @@ setup(
     ],
     entry_points={
         'pelican.plugins': [
-            'pelican_taskstack = pelican.plugins.pelican_taskstack:register'
+            'pelican_taskstack = pelican.plugins.taskstack:register'
         ]
     },
 )
