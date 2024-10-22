@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from github3 import login
 from pelican import signals
 from jinja2 import Template
@@ -138,13 +138,13 @@ class TaskStack:
         try:
             for event in issue.events():
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
-                    start_time = event.created_at
+                    start_time = event.created_at.astimezone(timezone.utc)
                     # start_time = datetime.fromisoformat(event.created_at)
                     elapsed = (datetime.utcnow() - start_time).total_seconds() / 60
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
-            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {type(start_time)}')
+            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}({type(start_time)})')
         return 0
 
     @classmethod
