@@ -101,12 +101,12 @@ class TaskStack:
                 if 'WIP' in task['labels']:
                     tasks['wip'] = task
                     task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
-        except e:
+        except Exception as e:
             logger.warning(f'Could not load tasks: {e}')
 
         try:
             logger.information(f'tasks: {tasks}')
-        except e:
+        except Exception as e:
             logger.warning(e)
         return tasks
 
