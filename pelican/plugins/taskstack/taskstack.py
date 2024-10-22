@@ -138,10 +138,11 @@ class TaskStack:
         try:
             for event in issue.events():
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
-                    start_time = event.created_at.astimezone(timezone.utc)
-                    # start_time = datetime.fromisoformat(event.created_at)
+                    # start_time = event.created_at.astimezone(timezone.utc)
+                    start_time = datetime.fromisoformat(event.created_at)
                     elapsed = (datetime.utcnow().astimezone(timezone.utc) - start_time).total_seconds() / 60
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
+            logger.warning(f'Progress for current pomodoro({issue.number}): {elapsed} minutes since {start_time}')
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}({type(start_time)})')
