@@ -125,7 +125,7 @@ class TaskStack:
                     pomodoros.append({
                         'start': start_time,
                         'end': event.created_at,
-                        'duration': ceil(((event.created_at - start_time).total_seconds() / 60)
+                        'duration': ceil(((event.created_at - start_time).total_seconds() / 60))
                     })
                     start_time = None
         except Exception as e:
