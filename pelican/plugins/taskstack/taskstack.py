@@ -145,8 +145,8 @@ class TaskStack:
                 tasks_html = cls.instance._generate_tasks_html(tasks)
                 
                 # Inject CSS and JS
-                css = cls.instance._get_static_content('css/taskstack.css')
-                js = cls.instance._get_static_content('js/taskstack.js')
+                css = cls.instance._get_static_content('../../css/taskstack.css')
+                js = cls.instance._get_static_content('../../js/taskstack.js')
                 
                 # Replace placeholder with content and add CSS/JS
                 content._content = content._content.replace(
@@ -226,7 +226,7 @@ class TaskStack:
         tasks = self.get_tasks()
         
         # Load template
-        template_path = os.path.join(os.path.dirname(__file__), 'templates/taskstack.html')
+        template_path = os.path.join(os.path.dirname(__file__), '../../templates/taskstack.html')
         with open(template_path) as f:
             template = Template(f.read())
 
