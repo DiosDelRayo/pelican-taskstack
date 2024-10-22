@@ -102,7 +102,7 @@ class TaskStack:
                     tasks['wip'] = task
                     task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
         except e:
-            logger.warning(f'Could not load tasks: {e})
+            logger.warning(f'Could not load tasks: {e}')
 
         try:
             logger.information(f'tasks: {tasks}')
