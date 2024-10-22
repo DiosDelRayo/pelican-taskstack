@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ SITEURL }}/theme/taskstack/css/taskstack.css">
+    <script src="{{ SITEURL }}/theme/taskstack/js/taskstack.js"></script>
+</head>
+<body>
+    <div class="taskstack">
+        <div class="stacked-tasks">
+            <h2>Task Pipeline</h2>
+            {% for task in tasks.stacked %}
+            <div class="task">
+                <a href="{{ task.url }}">#{{ task.number }} {{ task.title }}</a>
+                <div class="pomodoro-count">
+                    🍅 × {{ task.pomodoros|length }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if tasks.active %}
+        <div class="active-task">
+            <h2>Current Task</h2>
+            <div class="task">
+                <a href="{{ tasks.active.url }}">#{{ tasks.active.number }} {{ tasks.active.title }}</a>
+                {% if tasks.active.current_pomodoro %}
+                <div class="progress-bar" data-duration="{{ pomodoro_duration }}" data-progress="{{ tasks.active.current_pomodoro }}">
+                    <div class="progress"></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if tasks.today %}
+        <div class="today-tasks">
+            <h2>Completed Today</h2>
+            {% for task in tasks.today %}
+            <div class="task">
+                <a href="{{ task.url }}">#{{ task.number }} {{ task.title }}</a>
+                <div class="pomodoro-count">
+                    🍅 × {{ task.pomodoros|length }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
