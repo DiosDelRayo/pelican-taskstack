@@ -141,8 +141,8 @@ class TaskStack:
                     # start_time = event.created_at.astimezone(timezone.utc)
                     start_time = event.created_at
                     elapsed = (datetime.utcnow().astimezone(timezone.utc) - start_time).total_seconds() / 60
+                    logger.warning(f'Progress for current pomodoro({issue.number}): {elapsed} minutes since {start_time}')
                     return min(100, (elapsed / self.pomodoro_duration) * 100)
-            logger.warning(f'Progress for current pomodoro({issue.number}): {elapsed} minutes since {start_time}')
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}({type(start_time)})')
