@@ -198,7 +198,7 @@ class TaskStack:
         🍅: {len(task['pomodoros'])}
     </div>
     <div class="time-count">
-        ⌛: {total_time} min (ceil({total_time / self.pomodoro_duration}))
+        ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
     </div>
 </div>
         '''
