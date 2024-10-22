@@ -91,7 +91,7 @@ class TaskStack:
                     'title': issue.title,
                     'number': issue.number,
                     'url': issue.html_url,
-                    'labels': [label.name for label in issue.labels()],
+                    'labels': [label for label in issue.labels()],
                     'pomodoros': self._calculate_pomodoros(issue)
                 }
 
