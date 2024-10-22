@@ -85,7 +85,7 @@ class TaskStack:
             'today': []
         }
 
-        for issue in self.repo.issues(labels=['Stacked', 'Active', 'WIP']):
+        for issue in self.repo.issues(assignee=self.gh.me().login,):
             task = {
                 'title': issue.title,
                 'number': issue.number,
