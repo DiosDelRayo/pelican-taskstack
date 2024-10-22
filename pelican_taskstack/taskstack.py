@@ -6,6 +6,7 @@ from pelican import signals
 from jinja2 import Template
 
 class TaskStack:
+
     def __init__(self, pelican):
         self.pelican = pelican
         self.settings = pelican.settings
@@ -15,8 +16,8 @@ class TaskStack:
         self._init_github()
 
     def _get_github_token(self):
-        """Get GitHub token from environment or settings."""
-        return os.environ.get('GITHUB_TOKEN') or self.settings.get('GITHUB_TOKEN')
+        """Get GitHub token from settings or environment."""
+        return self.settings.get('GITHUB_TOKEN') or os.environ.get('GITHUB_TOKEN')
 
     def _get_repository_from_git(self):
         """Extract repository info from git remote URL."""
@@ -68,21 +69,27 @@ class TaskStack:
 
     def inject_content(self, content):
         """Inject taskstack content into an article or page."""
-        if '{taskstack}' in content._content:
-            tasks = self.get_tasks()
-            
-            # Generate HTML content
-            tasks_html = self._generate_tasks_html(tasks)
-            
-            # Inject CSS and JS
-            css = self._get_static_content('css/taskstack.css')
-            js = self._get_static_content('js/taskstack.js')
-            
-            # Replace placeholder with content and add CSS/JS
-            content._content = content._content.replace(
-                '{taskstack}',
-                f'<style>{css}</style>\n{tasks_html}\n<script>{js}</script>'
-            )
+        try:
+            if '{taskstack}' in content._content:
+                tasks = self.get_tasks()
+                
+                # Generate HTML content
+                tasks_html = self._generate_tasks_html(tasks)
+                
+                # Inject CSS and JS
+                css = self._get_static_content('css/taskstack.css')
+                js = self._get_static_content('js/taskstack.js')
+                
+                # Replace placeholder with content and add CSS/JS
+                content._content = content._content.replace(
+                    '{taskstack}',
+                    f'<style>{css}</style>\n{tasks_html}\n<script>{js}</script>'
+                )
+        except Exception as e:
+            print(f"Error injecting taskstack content: {e}")
+            # Don't fail completely, just show error message
+            error_html = f'<div class="taskstack-error">Error loading taskstack: {str(e)}</div>'
+            content._content = content._content.replace('{taskstack}', error_html)
 
     def _get_static_content(self, filename):
         """Read static file content."""
