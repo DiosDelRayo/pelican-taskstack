@@ -105,7 +105,7 @@ class TaskStack:
             logger.warning(f'Could not load tasks: {e}')
 
         try:
-            logger.information(f'tasks: {tasks}')
+            logger.info(f'tasks: {tasks}')
         except Exception as e:
             logger.warning(e)
         return tasks
