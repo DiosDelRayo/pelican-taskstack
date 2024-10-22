@@ -84,22 +84,25 @@ class TaskStack:
             'wip': None
         }
 
-        for issue in self.repo.issues():
-            task = {
-                'title': issue.title,
-                'number': issue.number,
-                'url': issue.html_url,
-                'labels': [label.name for label in issue.labels],
-                'pomodoros': self._calculate_pomodoros(issue)
-            }
+        try:
+            for issue in self.repo.issues():
+                task = {
+                    'title': issue.title,
+                    'number': issue.number,
+                    'url': issue.html_url,
+                    'labels': [label.name for label in issue.labels],
+                    'pomodoros': self._calculate_pomodoros(issue)
+                }
 
-            if 'Stacked' in task['labels']:
-                tasks['stacked'].append(task)
-            if 'Active' in task['labels']:
-                tasks['active'] = task
-            if 'WIP' in task['labels']:
-                tasks['wip'] = task
-                task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
+                if 'Stacked' in task['labels']:
+                    tasks['stacked'].append(task)
+                if 'Active' in task['labels']:
+                    tasks['active'] = task
+                if 'WIP' in task['labels']:
+                    tasks['wip'] = task
+                    task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
+        except e:
+            logger.warning(f'Could not load tasks: {e})
 
         try:
             logger.information(f'tasks: {tasks}')
@@ -158,7 +161,7 @@ class TaskStack:
                     f'<style>{css}</style>\n{tasks_html}\n<script>{js}</script>'
                 )
         except Exception as e:
-            logger.warning(f"Error injecting taskstack content: {e}", e)
+            logger.warning(f"Error injecting taskstack content: {e}")
             # Don't fail completely, just show error message
             error_html = f'<div class="taskstack-error">Error loading taskstack: {str(e)}</div>'
             content._content = content._content.replace('{taskstack}', error_html)
