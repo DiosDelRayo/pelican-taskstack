@@ -131,6 +131,7 @@ class TaskStack:
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {event.label}')
 
+        logger.warning(f'Pomodoros for issue({issue.number}): {pomodoros}')
         return pomodoros
 
     def _get_current_pomodoro_progress(self, issue):
