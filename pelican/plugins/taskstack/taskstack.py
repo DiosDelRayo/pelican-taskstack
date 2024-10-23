@@ -137,7 +137,7 @@ class TaskStack:
                     pomodoros.append({
                         'start': start_time,
                         'end': event.created_at,
-                        'duration': duration
+                        'duration': duration,
                         'progress': max(0, min(100, ceil(duration / self.pomodoro_duration)))
                     })
                     start_time = None
