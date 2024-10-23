@@ -11,6 +11,10 @@
     border-radius: 4px;
 }
 
+.task.stacked {
+    
+}
+
 .worked {
     display: grid;
     grid-template-rows: 20px;
@@ -86,6 +90,25 @@
     .task {
         border-color: #444;
         background-color: #333;
+    }
+    
+    .task:not(.stacked):not(.active) {
+        filter: grayscale(0.9);
+    }
+    
+    .task.active {
+        background-color: #337;
+    }
+    
+    .task.wip {
+        color: whitesmoke;
+        border-color: #040;
+        background-color: #131;
+        box-shadow: 0px 0px 50px #030;
+    }
+    
+    .done-tasks .task {
+        opacity: 0.9;
     }
     
     .progress-bar {
