@@ -90,6 +90,7 @@ class TaskStack:
 
         try:
             for issue in self.repo.issues():
+                logger.warning(type(issue))
                 task = {
                     'title': issue.title,
                     'number': issue.number,
@@ -192,7 +193,7 @@ class TaskStack:
     def _render_task(self, task) -> str:
         classes = ['task']
         total_time = 0
-        body = ''
+        body = 'why'
         if 'body' in task and task['body'] is not None and task['body'] != '':
             body = '<p>' + self._md.convert(body) + '</p>'
         for pomodoro in task['pomodoros']:
