@@ -6,7 +6,7 @@ from github3 import login
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
-from pelican import MarkdownReader
+from pelican.readers import MarkdownReader
 from math import ceil
 import logging
 
