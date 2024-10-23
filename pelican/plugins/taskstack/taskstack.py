@@ -6,7 +6,7 @@ from github3 import login
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
-from pelican.readers import MarkdownReader
+from markdown import Markdown
 from math import ceil
 import logging
 
@@ -21,6 +21,7 @@ class TaskStack:
         logger.warning(f'Create instance: {pelican}')
         self.pelican = pelican
         self.settings = pelican.settings
+        self._md = Markdown(**pelican.settings['MARKDOWN'])
         self.github_token = self._get_github_token()
         self.pomodoro_duration = self.settings.get('TASKSTACK_POMODORO_DURATION', 25)
         self.use_template = self.settings.get('TASKSTACK_USE_TEMPLATE', False)
@@ -193,7 +194,7 @@ class TaskStack:
         total_time = 0
         body = ''
         if 'body' in task and task['body'] is not None and task['body'] != '':
-            body = '<p>' + MarkdownReader(self.settings).md.convert(body) + '</p>'
+            body = '<p>' + self._md.convert(body) + '</p>'
         for pomodoro in task['pomodoros']:
             total_time += pomodoro['duration']
         out = f'''
