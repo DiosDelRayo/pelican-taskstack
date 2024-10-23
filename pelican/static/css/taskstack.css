@@ -15,12 +15,11 @@
 .worked {
     display: grid;
     grid-template-rows: 20px;
-    grid-template-columns: 1fr 5fr 1fr 1fr;
+    grid-template-columns: 1fr 6fr 1fr;
     height: fit-content;
     margin-top: 10px;
 }
 
-.duration,
 .end,
 .start {
     color: white;
