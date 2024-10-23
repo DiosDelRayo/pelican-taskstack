@@ -44,7 +44,9 @@
     background-color: #990022;
 }
 
+.time-count,
 .pomodoro-count {
+    display: inline-block;
     color: #666;
     margin-top: 5px;
 }

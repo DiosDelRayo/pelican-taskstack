@@ -235,7 +235,7 @@ class TaskStack:
     </div>
     <div class="time-count">
         ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
-    </div><summary>{worked}</details>
+    </div></summary>{worked}</details>
 </div>
         '''
         return out
