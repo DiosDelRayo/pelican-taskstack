@@ -204,6 +204,7 @@ class TaskStack:
 <div class="progress-bar" data-duration="{self.pomodoro_duration}" 
      data-progress="{pomodoro['progress']}">
     <div class="progress"></div>
+    <div class="progress-label">{duration}</div>
 </div>
 <span class="end">{pomodoro['end'] or ''}</span>
 <span class="duration">{pomodoro['duration'] or ''}</span>
