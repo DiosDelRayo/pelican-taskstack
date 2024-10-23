@@ -91,6 +91,7 @@ class TaskStack:
         try:
             for issue in self.repo.issues():
                 logger.warning(type(issue))
+                logger.warning(issue)
                 task = {
                     'title': issue.title,
                     'number': issue.number,
