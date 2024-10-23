@@ -200,12 +200,12 @@ class TaskStack:
     def _render_pomodoro(self, pomodoro: dict) -> str:
         out = f'''
 <div class="worked">
-<span class="start">{pomodoro['start'] or ''}</span>
+<span class="start">{pomodoro['start'].time() or ''}</span>
 <div class="progress-bar" data-duration="{self.pomodoro_duration}" 
      data-progress="{pomodoro['progress']}">
     <div class="progress"><p class="progress-label">{pomodoro['duration'] or ''}</p></div>
 </div>
-<span class="end">{pomodoro['end'] or ''}</span>
+<span class="end">{pomodoro['end'].time() or ''}</span>
 </div>
         '''
         return out
