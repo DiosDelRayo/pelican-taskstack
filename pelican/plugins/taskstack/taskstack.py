@@ -220,6 +220,7 @@ class TaskStack:
         total_time = 0
         body = task['body'] or ''
         worked = ''
+        logger.info(f'task: {task}')
         for pomodoro in task['pomodoros']:
             worked += self._render_pomodoro(pomodoro)
             total_time += pomodoro['duration']
