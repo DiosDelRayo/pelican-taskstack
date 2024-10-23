@@ -129,20 +129,29 @@ class TaskStack:
         start_time = None
 
         try:
+            pomodoro = None
             for event in issue.events():
                 logger.warning(type(event))
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
+                    if pomodoro:
+                        pomodoros.append(pomodoro)
                     start_time = event.created_at
+                    pomodoro = {
+                        'start': start_time,
+                        'end': None,
+                        'duration': None,
+                        'progress': None,
+                        'overflow': False
+                    }
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
-                    pomodoros.append({
-                        'start': start_time,
-                        'end': event.created_at,
-                        'duration': duration,
-                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration * 100))),
-                        'overflow': duration > (self.pomodoro_duration + self.pomodoro_grace)
-                    })
+                    pomodoro['end'] = event.created_at
+                    pomodoro['duration'] = duration
+                    pomodoro['progress's] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100))),
+                    pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
                     start_time = None
+            if pomodoro:
+                pomodoros.append(pomodoro)
         except Exception as e:
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {event.label}')
@@ -202,12 +211,12 @@ class TaskStack:
     def _render_pomodoro(self, pomodoro: dict) -> str:
         out = f'''
 <div class="worked">
-<span class="start">{pomodoro['start'].time().strftime('%H:%M') or ''}</span>
+<span class="start">{pomodoro['start'].time().strftime('%H:%M')}</span>
 <div class="progress-bar{' overflow' if pomodoro['overflow'] else ''}" data-duration="{self.pomodoro_duration}" 
-     data-progress="{pomodoro['progress']}">
-    <div class="progress"><p class="progress-label">{pomodoro['duration'] or ''}</p></div>
+     data-progress="{pomodoro['progress'] if pomodoro['progress'] else '0'}">
+    <div class="progress"><p class="progress-label">{pomodoro['duration'] if pomodoro['duration'] else ''}</p></div>
 </div>
-<span class="end">{pomodoro['end'].time().strftime('%H:%M') or ''}</span>
+<span class="end">{pomodoro['end'].time().strftime('%H:%M') if pomodoro['end'] else ''}</span>
 </div>
         '''
         return out
@@ -229,7 +238,7 @@ class TaskStack:
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
     {body}
-    <details><summary>
+    <details{' open' if 'wip' in classes else ''><summary>
     <div class="pomodoro-count">
         🍅: {len(task['pomodoros'])}
     </div>
@@ -257,15 +266,7 @@ class TaskStack:
             html.append('<h2>Current Task</h2>')
             task = tasks['active']
             progress = task.get('current_pomodoro', 0)
-            html.append(f'''
-                <div class="task">
-                    <a href="{task['url']}">{task['number']} {task['title']}</a>
-                    <div class="progress-bar" data-duration="{self.pomodoro_duration}" 
-                         data-progress="{progress}">
-                        <div class="progress"></div>
-                    </div>
-                </div>
-            ''')
+            html.append(self._render_task(task))
             html.append('</div>')
         
         # Today's tasks
@@ -273,16 +274,8 @@ class TaskStack:
             html.append('<div class="today-tasks">')
             html.append('<h2>Completed Today</h2>')
             for task in tasks['today']:
-                html.append(f'''
-                    <div class="task">
-                        <a href="{task['url']}">{task['number']} {task['title']}</a>
-                        <div class="pomodoro-count">
-                            🍅 × {len(task['pomodoros'])}
-                        </div>
-                    </div>
-                ''')
+                html.append(self._render_task(task))
             html.append('</div>')
-        
         html.append('</div>')
         return '\n'.join(html)
 
