@@ -57,6 +57,8 @@ class TaskStack:
         """Get repository from GitHub Actions environment."""
         if 'GITHUB_REPOSITORY' in os.environ:
             return os.environ['GITHUB_REPOSITORY']
+        if 'REPOSITORY' in os.environ:
+            return os.environ['REPOSITORY']
         return None
 
     def _init_github(self):
