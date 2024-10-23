@@ -228,13 +228,14 @@ class TaskStack:
         out = f'''
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
-    {body}{worked}
+    {body}
+    <description><summary>
     <div class="pomodoro-count">
         🍅: {len(task['pomodoros'])}
     </div>
     <div class="time-count">
         ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
-    </div>
+    </div><summary>{worked}</description>
 </div>
         '''
         return out

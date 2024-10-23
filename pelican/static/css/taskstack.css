@@ -40,7 +40,7 @@
     transition: width 1s linear;
 }
 
-.progress.overflow {
+.progress-bar.overflow .progress {
     background-color: #990022;
 }
 
