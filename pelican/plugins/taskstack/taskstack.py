@@ -22,6 +22,7 @@ class TaskStack:
         self.settings = pelican.settings
         self.github_token = self._get_github_token()
         self.pomodoro_duration = self.settings.get('TASKSTACK_POMODORO_DURATION', 25)
+        self.pomodoro_grace = self.settings.get('TASKSTACK_POMODORO_GRACE', 3)
         self.use_template = self.settings.get('TASKSTACK_USE_TEMPLATE', False)
         self._init_github()
 
@@ -138,7 +139,8 @@ class TaskStack:
                         'start': start_time,
                         'end': event.created_at,
                         'duration': duration,
-                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration)))
+                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
+                        'overflow': duration > (self.pomodoro_duration + self.po_grace);
                     })
                     start_time = None
         except Exception as e:
@@ -201,7 +203,7 @@ class TaskStack:
         out = f'''
 <div class="worked">
 <span class="start">{pomodoro['start'].time().strftime('%H:%M') or ''}</span>
-<div class="progress-bar" data-duration="{self.pomodoro_duration}" 
+<div class="progress-bar{' overflow' if pomodoro['overflow'] else ''}" data-duration="{self.pomodoro_duration}" 
      data-progress="{pomodoro['progress']}">
     <div class="progress"><p class="progress-label">{pomodoro['duration'] or ''}</p></div>
 </div>

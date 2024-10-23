@@ -40,6 +40,10 @@
     transition: width 1s linear;
 }
 
+.progress.overflow {
+    background-color: #990022;
+}
+
 .pomodoro-count {
     color: #666;
     margin-top: 5px;
