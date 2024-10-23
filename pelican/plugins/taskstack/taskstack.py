@@ -6,6 +6,7 @@ from github3 import login
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
+from pelican import MarkdownReader
 from math import ceil
 import logging
 
@@ -120,6 +121,7 @@ class TaskStack:
 
         try:
             for event in issue.events():
+                logger.warning(type(event))
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
                     start_time = event.created_at
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
@@ -189,11 +191,15 @@ class TaskStack:
     def _render_task(self, task) -> str:
         classes = ['task']
         total_time = 0
+        body = ''
+        if 'body' in task and task['body'] is not None and task['body'] != '':
+            body = '<p>' + MarkdownReader(self.settings).md.convert(body) + '</p>'
         for pomodoro in task['pomodoros']:
             total_time += pomodoro['duration']
         out = f'''
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
+    {body}
     <div class="pomodoro-count">
         🍅: {len(task['pomodoros'])}
     </div>
