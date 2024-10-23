@@ -215,7 +215,7 @@ class TaskStack:
         classes = ['task']
         for label in ('Stacked', 'Active', 'WIP'):
             if label in task['labels']:
-            classes.append(label.lower())
+                classes.append(label.lower())
         total_time = 0
         body = task['body'] or ''
         worked = ''
