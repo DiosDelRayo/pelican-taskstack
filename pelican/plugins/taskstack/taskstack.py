@@ -238,7 +238,7 @@ class TaskStack:
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
     {body}
-    <details{' open' if 'wip' in classes else ''><summary>
+    <details{' open' if 'wip' in classes else ''}><summary>
     <div class="pomodoro-count">
         🍅: {len(task['pomodoros'])}
     </div>
