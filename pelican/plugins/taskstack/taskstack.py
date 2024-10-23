@@ -83,7 +83,8 @@ class TaskStack:
         tasks = {
             'stacked': [],
             'active': None,
-            'today': []
+            'today': [],
+            'done': []
         }
 
         try:
@@ -111,8 +112,13 @@ class TaskStack:
                     task['stacked'] = True
                     tasks['stacked'].append(task)
                     continue
-                if len(task['pomodoros']) > 0:
-                    tasks['today'].append(task)  # TODO: we shoud check if any pomodoros from today, first.
+                # TODO: we shoud check if any pomodoros from today, first.
+                # and if not continue here
+                if len(task['pomodoros']) > 0 and not task['done']:
+                    tasks['today'].append(task)
+                    continue
+                if len(task['pomodoros']) > 0 and task['done']:
+                    tasks['done'].append(task)
 
         except Exception as e:
             logger.warning(f'Could not load tasks: {e}')
@@ -258,8 +264,16 @@ class TaskStack:
         # Today's tasks
         if tasks['today']:
             html.append('<div class="today-tasks">')
-            html.append('<h2>Completed Today</h2>')
+            html.append('<h2>Worked on Today</h2>')
             for task in tasks['today']:
+                html.append(self._render_task(task))
+            html.append('</div>')
+        
+        # Done tasks
+        if tasks['done']:
+            html.append('<div class="done-tasks">')
+            html.append('<h2>Completed Today</h2>')
+            for task in tasks['done']:
                 html.append(self._render_task(task))
             html.append('</div>')
         html.append('</div>')
