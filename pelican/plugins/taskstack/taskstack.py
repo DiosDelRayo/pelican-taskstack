@@ -87,7 +87,7 @@ class TaskStack:
         }
 
         try:
-            for issue in self.repo.issues():
+            for issue in self.repo.issues(since=datetime.utcnow(), sort='updated'):
                 logger.warning(type(issue))
                 logger.warning(issue)
                 task = {
@@ -95,15 +95,22 @@ class TaskStack:
                     'number': issue.number,
                     'body': issue.body_html,
                     'url': issue.html_url,
+                    'done': issue.is_closed(),
+                    'stacked': False,
+                    'active': False,
+                    'wip': False,
                     'labels': [label.name for label in issue.labels()],
                     'pomodoros': self._calculate_pomodoros(issue)
                 }
 
                 if 'Stacked' in task['labels']:
+                    task['stacked'] = True
                     tasks['stacked'].append(task)
                 if 'Active' in task['labels']:
+                    task['active'] = True
                     tasks['active'] = task
                 if 'WIP' in task['labels']:
+                    task['wip'] = True
                     tasks['wip'] = task
                     task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
         except Exception as e:
@@ -126,10 +133,12 @@ class TaskStack:
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
                     start_time = event.created_at
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
+                    duration = ceil(((event.created_at - start_time).total_seconds() / 60))
                     pomodoros.append({
                         'start': start_time,
                         'end': event.created_at,
-                        'duration': ceil(((event.created_at - start_time).total_seconds() / 60))
+                        'duration': duration
+                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration)))
                     })
                     start_time = None
         except Exception as e:
@@ -144,11 +153,10 @@ class TaskStack:
         try:
             for event in issue.events():
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
-                    # start_time = event.created_at.astimezone(timezone.utc)
                     start_time = event.created_at
                     elapsed = (datetime.utcnow().astimezone(timezone.utc) - start_time).total_seconds() / 60
                     logger.warning(f'Progress for current pomodoro({issue.number}): {elapsed} minutes since {start_time}')
-                    return min(100, (elapsed / self.pomodoro_duration) * 100)
+                    return max(0, min(100, ceil((elapsed / self.pomodoro_duration) * 100)))
         except Exception as e:
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
             logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}({type(start_time)})')
@@ -189,11 +197,30 @@ class TaskStack:
         with open(static_path, 'r') as f:
             return f.read()
 
+    def _render_pomodoro(self, pomodoro: dict) -> str:
+        out = f'''
+<div class="worked">
+<span class="start">{pomodoro['start'] or ''}</span>
+<div class="progress-bar" data-duration="{self.pomodoro_duration}" 
+     data-progress="{pomodoro['progress']}">
+    <div class="progress"></div>
+</div>
+<span class="end">{pomodoro['end'] or ''}</span>
+<span class="duration">{pomodoro['duration'] or ''}</span>
+</div>
+        '''
+        return out
+
     def _render_task(self, task) -> str:
         classes = ['task']
+        for label in ('Stacked', 'Active', 'WIP'):
+            if label in task['labels']:
+            classes.append(label.lower())
         total_time = 0
         body = task['body'] or ''
+        worked = ''
         for pomodoro in task['pomodoros']:
+            worked += self._render_pomodoro(pomodoro)
             total_time += pomodoro['duration']
         out = f'''
 <div class="{' '.join(classes)}">
@@ -204,7 +231,7 @@ class TaskStack:
     </div>
     <div class="time-count">
         ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
-    </div>
+    </div>{worked}
 </div>
         '''
         return out
