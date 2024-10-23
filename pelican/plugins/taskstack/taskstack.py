@@ -224,16 +224,17 @@ class TaskStack:
         for pomodoro in task['pomodoros']:
             worked += self._render_pomodoro(pomodoro)
             total_time += pomodoro['duration']
+        logger.info(f'worked: {worked}')
         out = f'''
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
-    {body}
+    {body}{worked}
     <div class="pomodoro-count">
         🍅: {len(task['pomodoros'])}
     </div>
     <div class="time-count">
         ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
-    </div>{worked}
+    </div>
 </div>
         '''
         return out
