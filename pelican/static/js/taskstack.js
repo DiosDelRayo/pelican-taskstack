@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 document.addEventListener('DOMContentLoaded', function() {
-    function updateProgressBars() {
+    function updateActiveProgressBars() {
         const bars = document.querySelectorAll('.progress-bar');
         
         bars.forEach(bar => {
