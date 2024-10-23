@@ -88,7 +88,7 @@ class TaskStack:
         }
 
         try:
-            for issue in self.repo.issues(since=(datetime.utcnow() - timedelta(days=2)), sort='updated'):
+            for issue in self.repo.issues(state='all', since=(datetime.utcnow() - timedelta(days=2)), sort='updated'):
                 logger.warning(type(issue))
                 logger.warning(issue)
                 task = {
