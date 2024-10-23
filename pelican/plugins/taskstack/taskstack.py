@@ -232,7 +232,7 @@ class TaskStack:
         logger.info(f'task: {task}')
         for pomodoro in task['pomodoros']:
             worked += self._render_pomodoro(pomodoro)
-            total_time += pomodoro['duration']
+            total_time += pomodoro['duration'] if pomodoro['duration'] else 0
         logger.info(f'worked: {worked}')
         out = f'''
 <div class="{' '.join(classes)}">
