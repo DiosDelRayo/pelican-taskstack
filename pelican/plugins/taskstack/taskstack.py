@@ -139,8 +139,8 @@ class TaskStack:
                         'start': start_time,
                         'end': event.created_at,
                         'duration': duration,
-                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
-                        'overflow': duration > (self.pomodoro_duration + self.po_grace);
+                        'progress': max(0, min(100, ceil(duration / self.pomodoro_duration * 100))),
+                        'overflow': duration > (self.pomodoro_duration + self.po_grace)
                     })
                     start_time = None
         except Exception as e:
