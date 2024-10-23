@@ -147,7 +147,7 @@ class TaskStack:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
                     pomodoro['end'] = event.created_at
                     pomodoro['duration'] = duration
-                    pomodoro['progress's] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100))),
+                    pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
                     start_time = None
             if pomodoro:
