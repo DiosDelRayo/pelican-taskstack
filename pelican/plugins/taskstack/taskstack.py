@@ -83,7 +83,6 @@ class TaskStack:
         tasks = {
             'stacked': [],
             'active': None,
-            'wip': None,
             'today': []
         }
 
@@ -104,16 +103,17 @@ class TaskStack:
                     'pomodoros': self._calculate_pomodoros(issue)
                 }
 
-                if 'Stacked' in task['labels']:
-                    task['stacked'] = True
-                    tasks['stacked'].append(task)
-                if 'Active' in task['labels']:
+                if 'Active' in task['labels'] or 'WIP' in task['labels']:
                     task['active'] = True
                     tasks['active'] = task
-                if 'WIP' in task['labels']:
-                    task['wip'] = True
-                    tasks['wip'] = task
-                    task['current_pomodoro'] = self._get_current_pomodoro_progress(issue)
+                    continue
+                if 'Stacked' in task['labels'] and not task['done']:
+                    task['stacked'] = True
+                    tasks['stacked'].append(task)
+                    continue
+                if len(task['pomodoros']) > 0:
+                    tasks['today'].append(task)  # TODO: we shoud check if any pomodoros from today, first.
+
         except Exception as e:
             logger.warning(f'Could not load tasks: {e}')
 
@@ -158,20 +158,6 @@ class TaskStack:
 
         logger.warning(f'Pomodoros for issue({issue.number}): {pomodoros}')
         return pomodoros
-
-    def _get_current_pomodoro_progress(self, issue):
-        """Calculate progress of current pomodoro."""
-        try:
-            for event in issue.events():
-                if event.event == 'labeled' and event.label['name'] == 'WIP':
-                    start_time = event.created_at
-                    elapsed = (datetime.utcnow().astimezone(timezone.utc) - start_time).total_seconds() / 60
-                    logger.warning(f'Progress for current pomodoro({issue.number}): {elapsed} minutes since {start_time}')
-                    return max(0, min(100, ceil((elapsed / self.pomodoro_duration) * 100)))
-        except Exception as e:
-            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {e}')
-            logger.warning(f'Could not calculate progress for current pomodoro({issue.number}): {start_time}({type(start_time)})')
-        return 0
 
     @classmethod
     def inject_content(cls, content):
