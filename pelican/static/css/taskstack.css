@@ -42,6 +42,7 @@
     height: 100%;
     background-color: #4CAF50;
     transition: width 1s linear;
+    width: var(--progress);
 }
 
 .progress-bar.overflow .progress {
