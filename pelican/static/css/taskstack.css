@@ -119,4 +119,13 @@
     .progress {
         background-color: #4CAF50;
     }
+
+    .worked.active .progress {
+        background-color: #6AF570;
+    }
+    
+    .worked.active .end {
+        text-shadow: 1px 1px 5px #4CAF50;
+        color: #4CAF50;
+    }
 }
