@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }
 	    const progressLabel = pomodoro.querySelector('.progress-bar .progress .progress-label');
 	    progressLabel.innerText = duration;
-	    setTimeout(updateProgressBars, 1000);
+	    setTimeout(updateActiveProgressBars, 1000);
 	});
     }
 
-    updateProgressBars();
+    window.updateActiveProgressBars = updateActiveProgressBars;
+    updateActiveProgressBars();
 });
