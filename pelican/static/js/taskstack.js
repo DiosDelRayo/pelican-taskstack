@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const endLabel = pomodoro.querySelector('.end');
 	    endLabel.innerText = (now.getUTCHours() < 10?'0':'') + now.getUTCHours() + ':' + (now.getUTCMinutes() < 10?'0':'') + now.getUTCMinutes();
 	    endLabel.title = now.getUTCFullYear() + '-' + ((now.getUTCMonth() < 9)?'0':'') + (now.getUTCMonth() + 1) + '-' + ((now.getUTCDate()<10)?'0':'') + now.getUTCDate();
-	    setTimeout(updateActiveProgressBars, 15000);
+	    setTimeout(window.updateActiveProgressBars, 15000);
 	});
     }
 
