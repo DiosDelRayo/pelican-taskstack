@@ -211,7 +211,7 @@ class TaskStack:
      data-progress="{progress}" style="--progress: {progress}%;">
     <div class="progress"><p class="progress-label">{pomodoro['duration'] if pomodoro['duration'] else ''}</p></div>
 </div>
-<span class="end" title="{pomodoro['end'].date().isoformat() if pomodoro['end'] else ''}>{pomodoro['end'].time().strftime('%H:%M') if pomodoro['end'] else ''}</span>
+<span class="end" title="{pomodoro['end'].date().isoformat() if pomodoro['end'] else ''}">{pomodoro['end'].time().strftime('%H:%M') if pomodoro['end'] else ''}</span>
 </div>
         '''
         return out
