@@ -7,18 +7,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const startTime = pomodoro.dataset.start;
 	    const pomodoroDuration = pomodoro.dataset.unit;
 	    const pomodoroGrace = pomodoro.dataset.grace;
-	    const currentTime = Math.floor(Date.now() / 1000);
+	    const now = Date.now();
+	    const currentTime = Math.floor(now / 1000);
 	    const duration = Math.ceil((currentTime - startTime) / 60);
 	    const progress =  Math.max(0, Math.min(100, (duration / pomodoroDuration) * 100));
-	    const progressElement = pomodoro.querySelector('.progress-bar .progress');
-	    progressElement.style.progress = progress + '%';
+	    const progressBar = pomodoro.querySelector('.progress-bar');
+	    progressBar.style.setProperty('--progress', progress + '%');
+	    progressBar.dataset.progress = progress;
 	    if( duration > (pomodoroDuration + pomodoroGrace) ) {
-		const progressBar = pomodoro.querySelector('.progress-bar');
 		progressBar.classList.add('overflow');
 	    }
 	    const progressLabel = pomodoro.querySelector('.progress-bar .progress .progress-label');
 	    progressLabel.innerText = duration;
-	    setTimeout(updateActiveProgressBars, 1000);
+	    const endLabel = pomodoro.querySelector('.end');
+	    endLabel.innerText = (date.getUTCHours() < 10?'0':'') + date.getUTCHours() + ':' + (date.getUTCMinutes() < 10?'0':'') + date.getUTCMinutes();
+	    setTimeout(updateActiveProgressBars, 15000);
 	});
     }
 
