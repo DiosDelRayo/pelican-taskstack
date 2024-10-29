@@ -205,7 +205,7 @@ class TaskStack:
     def _render_pomodoro(self, pomodoro: dict) -> str:
         progress = pomodoro['progress'] if pomodoro['progress'] else '0'
         out = f'''
-<div class="worked{' active' if not pomodoro['end'] else ''} data-start="{int(pomodoro['start'].timestamp())}" data-unit="{self.pomodoro_duration}" data-grace="{self.pomodoro_grace}"">
+<div class="worked{' active' if not pomodoro['end'] else ''}" data-start="{int(pomodoro['start'].timestamp())}" data-unit="{self.pomodoro_duration}" data-grace="{self.pomodoro_grace}">
 <span class="start" title="{pomodoro['start'].date().isoformat()}">{pomodoro['start'].time().strftime('%H:%M')}</span>
 <div class="progress-bar{' overflow' if pomodoro['overflow'] else ''}" data-duration="{self.pomodoro_duration}" 
      data-progress="{progress}" style="--progress: {progress}%;">
