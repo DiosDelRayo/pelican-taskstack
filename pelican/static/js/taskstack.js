@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const startTime = pomodoro.dataset.start;
 	    const pomodoroDuration = pomodoro.dataset.unit;
 	    const pomodoroGrace = pomodoro.dataset.grace;
-	    const now = Date.now();
-	    const currentTime = Math.floor(now / 1000);
+	    const now = new Date();
+	    const currentTime = Math.floor(Date.now() / 1000);
 	    const duration = Math.ceil((currentTime - startTime) / 60);
 	    const progress =  Math.max(0, Math.min(100, (duration / pomodoroDuration) * 100));
 	    const progressBar = pomodoro.querySelector('.progress-bar');
