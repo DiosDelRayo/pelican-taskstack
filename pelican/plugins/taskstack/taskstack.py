@@ -206,12 +206,12 @@ class TaskStack:
         progress = pomodoro['progress'] if pomodoro['progress'] else '0'
         out = f'''
 <div class="worked{' active' if not pomodoro['end'] else ''}">
-<span class="start">{pomodoro['start'].time().strftime('%H:%M')}</span>
+<span class="start" title="{pomodoro['start'].date().isoformat()}" data-start={int(pomodoro['start'].timestamp())} data-unit="{self.pomodoro_duration}" data-grace="{self.pomodoro_grace}">{pomodoro['start'].time().strftime('%H:%M')}</span>
 <div class="progress-bar{' overflow' if pomodoro['overflow'] else ''}" data-duration="{self.pomodoro_duration}" 
      data-progress="{progress}" style="--progress: {progress}%;">
     <div class="progress"><p class="progress-label">{pomodoro['duration'] if pomodoro['duration'] else ''}</p></div>
 </div>
-<span class="end">{pomodoro['end'].time().strftime('%H:%M') if pomodoro['end'] else ''}</span>
+<span class="end" title="{pomodoro['end'].date().isoformat() if pomodoro['end'] else ''}>{pomodoro['end'].time().strftime('%H:%M') if pomodoro['end'] else ''}</span>
 </div>
         '''
         return out
