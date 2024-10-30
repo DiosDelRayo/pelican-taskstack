@@ -123,6 +123,10 @@
     .worked.active .progress {
         background-color: #6AF570;
     }
+
+    .worked.active .progress-bar.overflow .progress {
+        background-color: #E50033;
+    }
     
     .worked.active .end {
         text-shadow: 1px 1px 5px #4CAF50;
