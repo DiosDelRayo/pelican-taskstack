@@ -164,7 +164,7 @@ class TaskStack:
                         'duration': None,
                         'progress': None,
                         'overflow': False,
-                        'today': False
+                        'today': start_time > today_start
                     }
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
@@ -173,8 +173,8 @@ class TaskStack:
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
                     start_time = None
-            pomodoro['today'] = True
-            # pomodoro['today'] = (pomodoro['start'] > today_start or (pomodoro['end'] is not None and pomodoro['end'] > today_start))
+                    if pomodoro['end'] is not None and pomodoro['end'] > today_start:
+                        pomodoro['today'] = True
             if pomodoro:
                 pomodoros.append(pomodoro)
         except Exception as e:
