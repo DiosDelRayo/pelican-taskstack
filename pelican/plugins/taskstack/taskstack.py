@@ -137,7 +137,7 @@ class TaskStack:
 
         try:
             logger.info(f'tasks: {tasks}')
-        except Exception as e:
+        except XException as e:
             logger.warning(e)
         return tasks
 
