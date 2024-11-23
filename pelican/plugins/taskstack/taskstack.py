@@ -122,8 +122,8 @@ class TaskStack:
                     task['stacked'] = True
                     tasks['stacked'].append(task)
                     continue
-                if not self._has_pomodoros_today(task):
-                    continue
+                #if not self._has_pomodoros_today(task):
+                #    continue
                 if len(task['pomodoros']) > 0 and not task['done']:
                     tasks['today'].append(task)
                     continue
