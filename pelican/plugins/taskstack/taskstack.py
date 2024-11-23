@@ -95,8 +95,8 @@ class TaskStack:
         try:
             for issue in sorted(
                     chain(
-                        self.repo.issues(state='open', labels='Stacked'),
                         self.repo.issues(state='all', since=(datetime.utcnow() - timedelta(hours=self.today_timespan))),
+                        self.repo.issues(state='open', labels='Stacked'),
                     ),
                     key=lambda x: x.updated_at):
                 logger.warning(type(issue))
