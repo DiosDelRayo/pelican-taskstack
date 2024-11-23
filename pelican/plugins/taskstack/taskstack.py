@@ -240,7 +240,7 @@ class TaskStack:
 
     def _render_task(self, task) -> str:
         classes = ['task']
-        for label in ('Stacked', 'Active', 'WIP'):
+        for label in ('Stacked', 'Active', 'WIP', 'Important', 'Urgent'):
             if label in task['labels']:
                 classes.append(label.lower())
         total_time = 0

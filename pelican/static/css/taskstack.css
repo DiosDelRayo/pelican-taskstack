@@ -6,13 +6,17 @@
 
 .task {
     border: 1px solid #ddd;
-    padding: 10px 10px 50px 10px;
+    padding: 10px 10px 15px 10px;
     margin: 10px 0;
     border-radius: 4px;
 }
 
 .task.stacked {
     
+}
+
+.task.untouched details:nth-of-type(2) {
+    display: none;
 }
 
 .worked {
@@ -76,6 +80,12 @@
     height: 1.2rem;
     float: left;
     background-color: #2979ff;
+}
+
+div.worked:not(.today) .start,
+div.worked:not(.today) .end,
+div.worked:not(.today) .progress {
+    opacity: 0.3;
 }
 
 .progress {
