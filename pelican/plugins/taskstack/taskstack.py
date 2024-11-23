@@ -25,7 +25,7 @@ class TaskStack:
         self.github_token = self._get_github_token()
         self.pomodoro_duration = self.settings.get('TASKSTACK_POMODORO_DURATION', 25)
         self.pomodoro_grace = self.settings.get('TASKSTACK_POMODORO_GRACE', 3)
-        self.today_timespan = self.settings.get('TODAY_TIMESPAN', 25)
+        self.today_timespan = self.settings.get('TODAY_TIMESPAN', 48)
         self.use_template = self.settings.get('TASKSTACK_USE_TEMPLATE', False)
         self._init_github()
 
@@ -157,7 +157,7 @@ class TaskStack:
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
                     if pomodoro:
                         pomodoros.append(pomodoro)
-                    start_time = event.created_at
+                    start_time = event.created_at.astimezone(timezone.utc)
                     pomodoro = {
                         'start': start_time,
                         'end': None,
@@ -168,7 +168,7 @@ class TaskStack:
                     }
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
-                    pomodoro['end'] = event.created_at
+                    pomodoro['end'] = event.created_at.astimezone(timezone.utc)
                     pomodoro['duration'] = duration
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
