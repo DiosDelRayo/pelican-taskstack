@@ -167,7 +167,7 @@ class TaskStack:
                         'today': start_time > today_start
                     }
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
-                    duration = ceil(((event.created_at - start_time).total_seconds() / 60))
+                    duration = ceil(((event.created_at.astimezone(timezone.utc) - start_time).total_seconds() / 60))
                     pomodoro['end'] = event.created_at.astimezone(timezone.utc)
                     pomodoro['duration'] = duration
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
