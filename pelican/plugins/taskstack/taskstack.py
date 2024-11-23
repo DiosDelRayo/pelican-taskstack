@@ -161,6 +161,7 @@ class TaskStack:
                     if pomodoro:
                         pomodoros.append(pomodoro)
                     start_time = event.created_at.astimezone(timezone.utc)
+                    logger.warning(f'start_time: {start_time}, today_start: {today_start}')
                     pomodoro = {
                         'start': start_time,
                         'end': None,
