@@ -7,7 +7,7 @@ from github3.issues.issue import ShortIssue
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
-from math import ceil
+from math import ceil, floor
 from itertools import chain
 import logging
 
@@ -266,7 +266,7 @@ class TaskStack:
         🍅: {len(task['pomodoros'])}
     </div>
     <div class="time-count">
-        ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)}) today: {total_time_today} min
+        ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)}) today: {total_time_today} min ({floor(total_time_today / self.pomodoro_duration)})
     </div></summary>{worked}</details>
 </div>
         '''
