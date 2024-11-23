@@ -92,6 +92,7 @@ class TaskStack:
             'today': [],
             'done': []
         }
+        issues: list[ShortIssue] = []
 
         try:
             for issue in sorted(
@@ -102,6 +103,9 @@ class TaskStack:
                     key=lambda x: x.updated_at):
                 logger.warning(type(issue))
                 logger.warning(issue)
+                if issue in issues:
+                    continue
+                issues.append(issue)
                 task = {
                     'title': issue.title,
                     'number': issue.number,
@@ -223,7 +227,7 @@ class TaskStack:
     def _render_pomodoro(self, pomodoro: dict) -> str:
         progress = pomodoro['progress'] if pomodoro['progress'] else '0'
         out = f'''
-<div class="worked{' active' if not pomodoro['end'] else ''}" data-start="{int(pomodoro['start'].timestamp())}" data-unit="{self.pomodoro_duration}" data-grace="{self.pomodoro_grace}">
+<div class="worked{' active' if not pomodoro['end'] else ''}{' today' if pomodoro['today'] else ''}" data-start="{int(pomodoro['start'].timestamp())}" data-unit="{self.pomodoro_duration}" data-grace="{self.pomodoro_grace}">
 <span class="start" title="{pomodoro['start'].date().isoformat()}">{pomodoro['start'].time().strftime('%H:%M')}</span>
 <div class="progress-bar{' overflow' if pomodoro['overflow'] else ''}" data-duration="{self.pomodoro_duration}" 
      data-progress="{progress}" style="--progress: {progress}%;">
@@ -247,6 +251,8 @@ class TaskStack:
             worked += self._render_pomodoro(pomodoro)
             total_time += pomodoro['duration'] if pomodoro['duration'] else 0
         logger.info(f'worked: {worked}')
+        if total_time == 0:
+            classes.append('untouched')
         out = f'''
 <div class="{' '.join(classes)}">
     <a href="{task['url']}">{task['number']} {task['title']}</a>
