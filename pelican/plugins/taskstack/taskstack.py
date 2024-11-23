@@ -210,7 +210,7 @@ class TaskStack:
                     '{taskstack}',
                     f'<style>{css}</style>\n{tasks_html}\n<script>{js}</script>'
                 )
-        except Exception as e:
+        except XException as e:
             logger.warning(f"Error injecting taskstack content: {e}")
             # Don't fail completely, just show error message
             error_html = f'<div class="taskstack-error">Error loading taskstack: {str(e)}</div>'
