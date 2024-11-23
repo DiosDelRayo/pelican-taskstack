@@ -177,7 +177,7 @@ class TaskStack:
                         pomodoro['today'] = True
             if pomodoro:
                 pomodoros.append(pomodoro)
-        except Exception as e:
+        except FileException as e:
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {event.label}')
 
