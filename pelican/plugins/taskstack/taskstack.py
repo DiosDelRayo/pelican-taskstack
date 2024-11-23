@@ -132,7 +132,7 @@ class TaskStack:
                     continue
                 if len(task['pomodoros']) > 0 and task['done']:
                     tasks['done'].append(task)
-        except Exception as e:
+        except XException as e:
             logger.warning(f'Could not load tasks: {e}')
 
         try:
