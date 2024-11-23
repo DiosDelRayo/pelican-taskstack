@@ -3,10 +3,12 @@ import re
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from github3 import login
+from github3.issues.issue import ShortIssue
 from pelican import signals
 from jinja2 import Template
 from pelican import signals
 from math import ceil
+from itertools import chain
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,6 +25,7 @@ class TaskStack:
         self.github_token = self._get_github_token()
         self.pomodoro_duration = self.settings.get('TASKSTACK_POMODORO_DURATION', 25)
         self.pomodoro_grace = self.settings.get('TASKSTACK_POMODORO_GRACE', 3)
+        self.today_timespan = self.settings.get('TODAY_TIMESPAN', 25)
         self.use_template = self.settings.get('TASKSTACK_USE_TEMPLATE', False)
         self._init_github()
 
@@ -90,7 +93,12 @@ class TaskStack:
         }
 
         try:
-            for issue in self.repo.issues(state='all', since=(datetime.utcnow() - timedelta(days=2)), sort='updated'):
+            for issue in sorted(
+                    chain(
+                        self.repo.issues(state='open', labels='Stacked'),
+                        self.repo.issues(state='all', since=(datetime.utcnow() - timedelta(hours=self.today_timespan))),
+                    ),
+                    key=lambda x: x.updated_at):
                 logger.warning(type(issue))
                 logger.warning(issue)
                 task = {
@@ -114,14 +122,13 @@ class TaskStack:
                     task['stacked'] = True
                     tasks['stacked'].append(task)
                     continue
-                # TODO: we shoud check if any pomodoros from today, first.
-                # and if not continue here
+                if not self._has_pomodoros_today(task):
+                    continue
                 if len(task['pomodoros']) > 0 and not task['done']:
                     tasks['today'].append(task)
                     continue
                 if len(task['pomodoros']) > 0 and task['done']:
                     tasks['done'].append(task)
-
         except Exception as e:
             logger.warning(f'Could not load tasks: {e}')
 
@@ -131,8 +138,15 @@ class TaskStack:
             logger.warning(e)
         return tasks
 
-    def _calculate_pomodoros(self, issue):
+    def _has_pomodoros_today(self, task: list) -> bool:
+        for pomodoro in issues['pomodoros']:
+            if pomodoro['today']:
+                return True
+        return False
+
+    def _calculate_pomodoros(self, issue: ShortIssue) -> list:
         """Calculate completed pomodoros from issue events."""
+        today_start = datetime.utcnow() - timedelta(hours=self.today_timespan)
         pomodoros = []
         start_time = None
 
@@ -149,7 +163,8 @@ class TaskStack:
                         'end': None,
                         'duration': None,
                         'progress': None,
-                        'overflow': False
+                        'overflow': False,
+                        'today': False
                     }
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
@@ -158,6 +173,7 @@ class TaskStack:
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
                     start_time = None
+            pomodoro['today'] = pomodoro['start'] > today_start or (pomodoro['end'] is not None and pomodoro['end'] > today_start)
             if pomodoro:
                 pomodoros.append(pomodoro)
         except Exception as e:
