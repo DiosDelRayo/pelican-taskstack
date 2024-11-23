@@ -244,12 +244,14 @@ class TaskStack:
             if label in task['labels']:
                 classes.append(label.lower())
         total_time = 0
+        total_time_today = 0
         body = task['body'] or ''
         worked = ''
         logger.info(f'task: {task}')
         for pomodoro in task['pomodoros']:
             worked += self._render_pomodoro(pomodoro)
             total_time += pomodoro['duration'] if pomodoro['duration'] else 0
+            total_time_today += pomodoro['duration'] if pomodoro['duration'] and pomodoro['today'] else 0
         logger.info(f'worked: {worked}')
         if total_time == 0:
             classes.append('untouched')
@@ -264,7 +266,7 @@ class TaskStack:
         🍅: {len(task['pomodoros'])}
     </div>
     <div class="time-count">
-        ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)})
+        ⌛: {total_time} min ({ceil(total_time / self.pomodoro_duration)}) today: {total_time_today} min
     </div></summary>{worked}</details>
 </div>
         '''
