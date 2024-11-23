@@ -14,8 +14,6 @@ import logging
 logger = logging.getLogger(__name__)
 logger.warning('Load TaskStack')
 
-class XException(Exception):
-    pass
 
 class TaskStack:
 
@@ -132,12 +130,12 @@ class TaskStack:
                     continue
                 if len(task['pomodoros']) > 0 and task['done']:
                     tasks['done'].append(task)
-        except XException as e:
+        except Exception as e:
             logger.warning(f'Could not load tasks: {e}')
 
         try:
             logger.info(f'tasks: {tasks}')
-        except XException as e:
+        except Exception as e:
             logger.warning(e)
         return tasks
 
@@ -161,7 +159,6 @@ class TaskStack:
                     if pomodoro:
                         pomodoros.append(pomodoro)
                     start_time = event.created_at
-                    logger.warning(f'start_time: {start_time}, today_start: {today_start}')
                     pomodoro = {
                         'start': start_time,
                         'end': None,
@@ -170,7 +167,6 @@ class TaskStack:
                         'overflow': False,
                         'today': start_time > today_start
                     }
-                    logger.warning(f'pomodoro: {pomodoro}')
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at - start_time).total_seconds() / 60))
                     pomodoro['end'] = event.created_at
@@ -182,7 +178,7 @@ class TaskStack:
                         pomodoro['today'] = True
             if pomodoro:
                 pomodoros.append(pomodoro)
-        except XException as e:
+        except Exception as e:
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {event.label}')
 
@@ -212,7 +208,7 @@ class TaskStack:
                     '{taskstack}',
                     f'<style>{css}</style>\n{tasks_html}\n<script>{js}</script>'
                 )
-        except XException as e:
+        except Exception as e:
             logger.warning(f"Error injecting taskstack content: {e}")
             # Don't fail completely, just show error message
             error_html = f'<div class="taskstack-error">Error loading taskstack: {str(e)}</div>'
