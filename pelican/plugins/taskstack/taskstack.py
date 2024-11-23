@@ -149,7 +149,7 @@ class TaskStack:
 
     def _calculate_pomodoros(self, issue: ShortIssue) -> list:
         """Calculate completed pomodoros from issue events."""
-        today_start = datetime.utcnow() - timedelta(hours=self.today_timespan)
+        today_start = (datetime.utcnow() - timedelta(hours=self.today_timespan)).astimezone(timezone.utc)
         pomodoros = []
         start_time = None
 
@@ -160,7 +160,7 @@ class TaskStack:
                 if event.event == 'labeled' and event.label['name'] == 'WIP':
                     if pomodoro:
                         pomodoros.append(pomodoro)
-                    start_time = event.created_at.astimezone(timezone.utc)
+                    start_time = event.created_at
                     logger.warning(f'start_time: {start_time}, today_start: {today_start}')
                     pomodoro = {
                         'start': start_time,
@@ -172,8 +172,8 @@ class TaskStack:
                     }
                     logger.warning(f'promodoro: {promodoro}')
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
-                    duration = ceil(((event.created_at.astimezone(timezone.utc) - start_time).total_seconds() / 60))
-                    pomodoro['end'] = event.created_at.astimezone(timezone.utc)
+                    duration = ceil(((event.created_at - start_time).total_seconds() / 60))
+                    pomodoro['end'] = event.created_at
                     pomodoro['duration'] = duration
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
