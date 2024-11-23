@@ -14,6 +14,9 @@ import logging
 logger = logging.getLogger(__name__)
 logger.warning('Load TaskStack')
 
+class XException(Exception):
+    pass
+
 class TaskStack:
 
     instance: 'TaskStack' = None
@@ -177,7 +180,7 @@ class TaskStack:
                         pomodoro['today'] = True
             if pomodoro:
                 pomodoros.append(pomodoro)
-        except FileException as e:
+        except XException as e:
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {e}')
             logger.warning(f'Could not calculate pomodoros for issue({issue.number}): {event.label}')
 
