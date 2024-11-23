@@ -173,7 +173,7 @@ class TaskStack:
                     pomodoro['progress'] = max(0, min(100, ceil(duration / self.pomodoro_duration * 100)))
                     pomodoro['overflow'] = duration > (self.pomodoro_duration + self.pomodoro_grace)
                     start_time = None
-            pomodoro['today'] = pomodoro['start'] > today_start or (pomodoro['end'] is not None and pomodoro['end'] > today_start)
+            pomodoro['today'] = (pomodoro['start'] > today_start or (pomodoro['end'] is not None and pomodoro['end'] > today_start))
             if pomodoro:
                 pomodoros.append(pomodoro)
         except Exception as e:
