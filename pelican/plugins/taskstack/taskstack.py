@@ -26,7 +26,7 @@ class TaskStack:
         self.github_token = self._get_github_token()
         self.pomodoro_duration = self.settings.get('TASKSTACK_POMODORO_DURATION', 25)
         self.pomodoro_grace = self.settings.get('TASKSTACK_POMODORO_GRACE', 3)
-        self.today_timespan = self.settings.get('TODAY_TIMESPAN', 24)
+        self.today_timespan = self.settings.get('TODAY_TIMESPAN', 48)
         self.use_template = self.settings.get('TASKSTACK_USE_TEMPLATE', False)
         self._init_github()
 
