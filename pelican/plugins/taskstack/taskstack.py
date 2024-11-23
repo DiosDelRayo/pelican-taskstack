@@ -169,6 +169,7 @@ class TaskStack:
                         'overflow': False,
                         'today': start_time > today_start
                     }
+                    logger.warning(f'promodoro: {promodoro}')
                 elif event.event == 'unlabeled' and event.label['name'] == 'WIP' and start_time:
                     duration = ceil(((event.created_at.astimezone(timezone.utc) - start_time).total_seconds() / 60))
                     pomodoro['end'] = event.created_at.astimezone(timezone.utc)
